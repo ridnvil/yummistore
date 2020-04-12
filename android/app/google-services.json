@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1015190102967",
+    "firebase_url": "https://cakestore-e7c59.firebaseio.com",
+    "project_id": "cakestore-e7c59",
+    "storage_bucket": "cakestore-e7c59.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1015190102967:android:d73c04509e50d7596dfe32",
+        "android_client_info": {
+          "package_name": "com.nvil.cakestore"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1015190102967-b5v4s35g02f0ne47cfmcabb1ralji3ka.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.nvil.cakestore",
+            "certificate_hash": "288e32e375e459e6e12b288e899682f2fb762e16"
+          }
+        },
+        {
+          "client_id": "1015190102967-qsqas4t29sliclgqh7kmge3hbgcmenbr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDSZfv91KHKfheFj298Y9s3OnMkQhLKxDw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1015190102967-qsqas4t29sliclgqh7kmge3hbgcmenbr.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
