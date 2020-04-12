@@ -36,11 +36,13 @@ class _CommentMessageState extends State<CommentMessage> {
                         ),
                         Padding(
                           padding: const EdgeInsets.all(2.0),
-                          child: Text('${doc['user']} : '),
+                          child: Text('${doc['user']} : ', style: TextStyle(fontWeight: FontWeight.bold),),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.all(2.0),
-                          child: Text(doc['comment']),
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.all(2.0),
+                            child: Text(doc['comment']),
+                          ),
                         ),
                       ],
                     ),

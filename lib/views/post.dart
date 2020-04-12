@@ -90,6 +90,7 @@ class _PostProductsState extends State<PostProducts> {
     await Firestore.instance.collection('products').document(postID)
         .setData({
           'postID': postID,
+          'avatar': currentUser.photoUrl,
           'author': currentUser.displayName, 
           'idauthor': currentUser.id, 
           'picture': imageURL,
@@ -235,16 +236,16 @@ class _PostProductsState extends State<PostProducts> {
               ),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: TextField(
-              controller: productName,
-              decoration: InputDecoration(
-                border: InputBorder.none,
-                labelText: 'Description / Deskripsi'
-              ),
-            ),
-          ),
+          // Padding(
+          //   padding: const EdgeInsets.all(20.0),
+          //   child: TextField(
+          //     controller: productName,
+          //     decoration: InputDecoration(
+          //       border: InputBorder.none,
+          //       labelText: 'Description / Deskripsi'
+          //     ),
+          //   ),
+          // ),
           Padding(
             padding: const EdgeInsets.all(20.0),
             child: TextField(
