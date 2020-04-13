@@ -2,6 +2,9 @@ import 'package:cakestore/views/chat.dart';
 import 'package:cakestore/views/chatlist.dart';
 import 'package:cakestore/views/comment.dart';
 import 'package:cakestore/views/detailsorder.dart';
+import 'package:cakestore/views/orderankeluar.dart';
+import 'package:cakestore/views/orderanmasuk.dart';
+import 'package:cakestore/views/orderproduct.dart';
 import 'package:cakestore/views/post.dart';
 import 'package:cakestore/views/profile.dart';
 import 'package:cakestore/views/profileyum.dart';
@@ -57,11 +60,15 @@ class _HomeState extends State<Home> {
         child: Container(
           child: ListView(
             children: <Widget>[
-              menuDrawwer("My Posting", Icons.screen_share, null),
+              menuDrawwer("Orderan Masuk", Icons.store, OrderanMasuk(account: currentUser,)),
+              SizedBox(height: 10.0,),
+              menuDrawwer("Postingan Saya", Icons.screen_share, ProfileUser(account: currentUser, userID: currentUser.id, currentID: currentUser.id,)),
+              SizedBox(height: 10.0,),
+              menuDrawwer("Orderan Saya", Icons.store, OrderanSaya(account: currentUser,)),
               SizedBox(height: 10.0,),
               menuDrawwer("Chat", Icons.chat_bubble_outline, ListChat()),
               SizedBox(height: 10.0,),
-              menuDrawwer("My Profile", Icons.person, Profiles(account: currentUser)),
+              menuDrawwer("Profile Saya", Icons.person, Profiles(account: currentUser)),
               SizedBox(height: 10.0,),
               menuDrawwer("Product Report", Icons.report, null)
             ],
@@ -102,15 +109,15 @@ class _HomeState extends State<Home> {
         centerTitle: true,
         elevation: 0,
         backgroundColor: Colors.transparent,
-        title: Text("YUmmi Store", style: TextStyle(color: Theme.of(context).primaryColorDark),),
+        title: Text("YUmmi", style: TextStyle(color: Theme.of(context).primaryColorDark),),
         actions: <Widget>[
           IconButton(
             icon: Image.network(currentUser.photoUrl),
             onPressed: () {
+              print(currentUser.id);
               Navigator.of(context).push(MaterialPageRoute(
                 builder: (_) => Profiles(account: currentUser)
               ));
-              print(currentUser.displayName);
             },
           )
         ],
@@ -133,7 +140,43 @@ class _HomeState extends State<Home> {
                   children: snapshot.data.documents.map((document) {
                     return Material(
                       child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
                         children: <Widget>[
+                          Container(
+                            padding: EdgeInsets.all(10.0),
+                            child: Center(
+                              child: Column(
+                                children: <Widget>[
+                                  Row(
+                                    children: <Widget>[
+                                      GestureDetector(
+                                        onTap: () {
+                                          Navigator.of(context).push(MaterialPageRoute(
+                                            builder: (_) => ProfileUser(userID: document['idauthor'], currentID: currentUser.id, account: currentUser,)
+                                          ));
+                                        },
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(5.0),
+                                          child: CircleAvatar(
+                                            backgroundImage: NetworkImage(document['avatar']),
+                                          ),
+                                        ),
+                                      ),
+                                      GestureDetector(
+                                        onTap: () {
+                                          Navigator.of(context).push(MaterialPageRoute(
+                                            builder: (_) => ProfileUser(userID: document['idauthor'], currentID: currentUser.id, account: currentUser,)
+                                          ));
+                                        },
+                                        child: Text('${document['author']}', style: TextStyle(fontSize: 15.0, color: Colors.black),)
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
                           Stack(
                             alignment: Alignment.topRight,
                             children: <Widget>[
@@ -181,7 +224,7 @@ class _HomeState extends State<Home> {
                                                       "report": reportController.text,
                                                       "user": currentUser.displayName,
                                                       "publish": DateTime.now()
-                                                    }).then((ddata) => Navigator.pop(context));
+                                                    }).then((data) => Navigator.pop(context));
                                             },
                                           )
                                         ],
@@ -197,7 +240,6 @@ class _HomeState extends State<Home> {
                               Navigator.of(context).push(MaterialPageRoute(
                                 builder: (_) => DetailsProduct()
                               ));
-                              print(document['product']);
                             },
                             child: ClipRRect(
                               // borderRadius: BorderRadius.only(bottomLeft: Radius.circular(10.0), bottomRight: Radius.circular(10.0)),
@@ -213,7 +255,7 @@ class _HomeState extends State<Home> {
                                         children: <Widget>[
                                           Padding(
                                             padding: const EdgeInsets.only(left: 8.0, top: 8.0),
-                                            child: Text(document['product'], style: TextStyle(fontSize: 20.0, color: Colors.black),),
+                                            child: Text(document['product'], style: TextStyle(fontSize: 20.0, color: Colors.black), overflow: TextOverflow.ellipsis,),
                                           ),
                                           Padding(
                                             padding: const EdgeInsets.only(left: 8.0),
@@ -226,41 +268,36 @@ class _HomeState extends State<Home> {
                                         ],
                                       ),
                                     ),
-                                    Expanded(
-                                      child: Center(
-                                        child: Column(
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          children: <Widget>[
-                                            InkWell(
-                                              onTap: () {
-                                                if(currentUser.id == document['idauthor']){
-                                                  Navigator.of(context).push(MaterialPageRoute(
-                                                    builder: (_) => Profiles(account: currentUser,)
-                                                  ));
-                                                }else{
-                                                  Navigator.of(context).push(MaterialPageRoute(
-                                                    builder: (_) => ProfileUser(userID: document['idauthor'],)
-                                                  ));
-                                                }
-                                              },
-                                              child: Text('By : ${document['author']}', style: TextStyle(fontSize: 15.0, color: Colors.black),)
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
                                     currentUser.id != document['idauthor'] ? Expanded(
-                                      child: Material(
-                                        color: Colors.transparent,
-                                        child: MaterialButton(
-                                          height: 100.0,
-                                          child: Text("Chat", style: TextStyle(fontSize: 20.0, color: Colors.black)),
-                                          onPressed: () {
-                                            Navigator.of(context).push(MaterialPageRoute(
-                                              builder: (_) => ChatMessage(outhorID: document['idauthor'],)
-                                            ));
-                                          },
-                                        ),
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        children: <Widget>[
+                                          Material(
+                                            color: Colors.transparent,
+                                            child: MaterialButton(
+                                              height: 100.0,
+                                              child: Text("Order", style: TextStyle(fontSize: 20.0, color: Colors.black)),
+                                              onPressed: () {
+                                                Navigator.of(context).push(MaterialPageRoute(
+                                                  builder: (_) => OrderProduct(productID: document['postID'], account: currentUser,)
+                                                ));
+                                              },
+                                            ),
+                                          ),
+                                          Material(
+                                            color: Colors.transparent,
+                                            child: MaterialButton(
+                                              height: 100.0,
+                                              child: Text("Chat", style: TextStyle(fontSize: 20.0, color: Colors.black)),
+                                              onPressed: () {
+                                                Navigator.of(context).push(MaterialPageRoute(
+                                                  builder: (_) => ChatMessage(outhorID: document['idauthor'],)
+                                                ));
+                                              },
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     )
                                     : Expanded(
@@ -344,18 +381,15 @@ class _HomeState extends State<Home> {
                                                         padding: const EdgeInsets.all(10.0),
                                                         child: Container(
                                                           width: 200.0,
-                                                          height: 100.0,
-                                                          child: ListView(
-                                                            children: <Widget>[
-                                                              TextField(
-                                                                controller: commenttController,
-                                                                maxLines: 5,
-                                                                keyboardType: TextInputType.text,
-                                                                decoration: InputDecoration(
-                                                                  labelText: 'Comment Type'
-                                                                ),
-                                                              )
-                                                            ],
+                                                          height: MediaQuery.of(context).size.height * 0.2,
+                                                          child: TextField(
+                                                            controller: commenttController,
+                                                            maxLines: 5,
+                                                            keyboardType: TextInputType.text,
+                                                            decoration: InputDecoration(
+                                                              border: OutlineInputBorder(),
+                                                              labelText: 'Comment Type'
+                                                            ),
                                                           ),
                                                         ),
                                                       ),
