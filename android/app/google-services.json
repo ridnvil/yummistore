@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "1015190102967-ipt2v2hg6uv6bdh44uaf7fekq36dsl3h.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.nvil.cakestore",
+            "certificate_hash": "6538def2f72fb4e09c29cf20b60fbf485a8ab57b"
+          }
+        },
+        {
           "client_id": "1015190102967-b5v4s35g02f0ne47cfmcabb1ralji3ka.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
