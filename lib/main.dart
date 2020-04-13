@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
         primaryColorLight: Colors.white,
         primaryColorDark: Colors.black87
       ),
-      home: Login(),
+      home: Login(logout: false,),
     );
   }
 }

@@ -1,9 +1,14 @@
+import 'package:cakestore/views/comment.dart';
+import 'package:cakestore/views/profile.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class ProfileUser extends StatefulWidget {
   final String userID;
-  ProfileUser({Key key, this.userID}) : super(key: key);
+  final String currentID;
+  final GoogleSignInAccount account;
+  ProfileUser({Key key, this.userID, this.currentID, this.account}) : super(key: key);
 
   @override
   _ProfileUserState createState() => _ProfileUserState();
@@ -11,19 +16,36 @@ class ProfileUser extends StatefulWidget {
 
 class _ProfileUserState extends State<ProfileUser> {
   String iduser;
+  String idcurrentuser;
+  bool thismineuser = false;
 
   @override
   void initState() {
     super.initState();
     iduser = widget.userID;
+    idcurrentuser = widget.currentID;
+
+    if(iduser == idcurrentuser){
+      thismineuser = true;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Profile", style: TextStyle(color: Colors.black),),
+        title: thismineuser ? Text("Postingan Saya", style: TextStyle(color: Colors.black),): Text("YUmmi User", style: TextStyle(color: Colors.black),),
         centerTitle: true,
+        actions: <Widget>[
+          thismineuser ? IconButton(
+            icon: Text('EDIT', style: TextStyle(color: Colors.lime),),
+            onPressed: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                builder: (_) => Profiles(account: widget.account,)
+              ));
+            },
+          ): Text('')
+        ],
         flexibleSpace: Material(
           child: Padding(
             padding: const EdgeInsets.only(right: 350.0),
@@ -42,7 +64,7 @@ class _ProfileUserState extends State<ProfileUser> {
           if(snapshot.hasError)
             return Center(child: Text("${snapshot.error}"),);
 
-          if(!snapshot.hasData)
+          if(snapshot.data == null)
             return Center(child: CircularProgressIndicator(),);
 
           var document = snapshot.data;
@@ -64,10 +86,13 @@ class _ProfileUserState extends State<ProfileUser> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                          Text(document['nama']),
-                          Text(document['phone']),
-                          Text(document['email']),
-                          Text(document['alamat']),
+                          Text('${document['nama']}'),
+                          SizedBox(height: 3.0,),
+                          Text('Phone: ${document['phone']}'),
+                          SizedBox(height: 3.0,),
+                          Text('Email: ${document['email']}'),
+                          SizedBox(height: 3.0,),
+                          Text('Alamat: ${document['alamat']}'),
                         ],
                       ),
                     )
@@ -81,7 +106,7 @@ class _ProfileUserState extends State<ProfileUser> {
                     color: Colors.lime,
                     borderRadius: BorderRadius.circular(10.0)
                   ),
-                  height: 200.0,
+                  height: 100.0,
                   child: Row(
                     children: <Widget>[
                       Expanded(child: Padding(
@@ -90,14 +115,14 @@ class _ProfileUserState extends State<ProfileUser> {
                           borderRadius: BorderRadius.circular(10.0),
                           color: Colors.lime[300],
                           child: StreamBuilder(
-                            stream: Firestore.instance.collection('products').where('idauthor', isEqualTo: document['usrid']).snapshots(),
+                            stream: Firestore.instance.collection('products').where('idauthor', isEqualTo: iduser).snapshots(),
                             builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
                               if(snapshot.hasError)
                                 return Center(child: Text("${snapshot.error}"),);
                               
-                              if(!snapshot.hasData)
+                              if(snapshot.data == null)
                                 return Center(child: CircularProgressIndicator(),);
-                                
+
                               return Center(
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
@@ -118,14 +143,13 @@ class _ProfileUserState extends State<ProfileUser> {
                           borderRadius: BorderRadius.circular(10.0),
                           color: Colors.lime[300],
                           child: StreamBuilder(
-                            stream: Firestore.instance.collection('products').where('idouthor', isEqualTo: document['usrid']).snapshots(),
-                            builder: (context, snapshot) {
+                            stream: Firestore.instance.collection('orders').where('ownerid', isEqualTo: iduser).snapshots(),
+                            builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
                               if(snapshot.hasError)
                                 return Center(child: Text("${snapshot.error}"),);
 
-                              List<QuerySnapshot> data = [];
-                              data.add(snapshot.data);
-                              int orderan = 0;
+                              if(snapshot.data == null)
+                                return Center(child: CircularProgressIndicator(),);
 
                               return Center(
                                 child: Column(
@@ -133,7 +157,7 @@ class _ProfileUserState extends State<ProfileUser> {
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: <Widget>[
                                     Text('Orderan', style: TextStyle(fontSize: 20),),
-                                    Text('$orderan', style: TextStyle(fontSize: 50),),
+                                    Text('${snapshot.data.documents.length}', style: TextStyle(fontSize: 50),),
                                   ],
                                 ),
                               );
@@ -146,28 +170,44 @@ class _ProfileUserState extends State<ProfileUser> {
                 ),
               ),
               StreamBuilder(
-                stream: Firestore.instance.collection('products').where('idauthor', isEqualTo: document['usrid']).snapshots(),
+                stream: Firestore.instance.collection('products').where('idauthor', isEqualTo: iduser).orderBy('publish', descending: true).snapshots(),
                 builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
                   if(snapshot.hasError)
                     return Center(child: Text("${snapshot.error}"),);
 
-                  if(!snapshot.hasData)
-                    return Center(child: CircularProgressIndicator(),);
+                  if(snapshot.data == null)
+                    return Center(child: Text('Postingan Kosong'),);
 
                   return Column(
                     children: snapshot.data.documents.map((doc){
-                      return ExpansionTile(
-                        title: Text('${doc['product']}'),
-                        leading: Image.network(doc['picture']),
-                        subtitle: Text('Stock ${doc['stock']}'),
-                        children: <Widget>[
-                          Image.network(doc['picture'])
-                        ],
+                      return Material(
+                        // color: Colors.lime,
+                        child: Column(
+                          children: <Widget>[
+                            ExpansionTile(
+                              title: Text('${doc['product']}'),
+                              leading: Image.network(doc['picture']),
+                              subtitle: Text('Stock ${doc['stock']}'),
+                              children: <Widget>[
+                                Image.network(doc['picture'])
+                              ],
+                            ),
+                            ExpansionTile(
+                              title: Text('Show Comment'),
+                              children: <Widget>[
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: CommentMessage(postID: doc['postID'],),
+                                )
+                              ],
+                            ),
+                          ],
+                        ),
                       );
                     }).toList(),
                   );
                 },
-              )
+              ),
             ],
           );
         },

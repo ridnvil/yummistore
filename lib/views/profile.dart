@@ -1,12 +1,12 @@
+import 'package:cakestore/views/login.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 final GoogleSignIn googleSignIn = GoogleSignIn();
 class Profiles extends StatefulWidget {
-  final GoogleSignIn googleSignIn;
   final GoogleSignInAccount account;
-  Profiles({Key key, this.account, this.googleSignIn}) : super(key: key);
+  Profiles({Key key, this.account}) : super(key: key);
 
   @override
   _ProfilesState createState() => _ProfilesState();
@@ -19,7 +19,6 @@ class _ProfilesState extends State<Profiles> {
   TextEditingController phone = TextEditingController();
   TextEditingController address = TextEditingController();
   bool seller = false;
-  GlobalKey _scaffoldKey = GlobalKey();
 
   @override
   void initState() {
@@ -31,7 +30,7 @@ class _ProfilesState extends State<Profiles> {
   }
 
   getUserProfile(id) async {
-    Firestore.instance.collection('users')
+    await Firestore.instance.collection('users')
         .document(id)
         .get()
         .then((user) {
@@ -48,7 +47,6 @@ class _ProfilesState extends State<Profiles> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: _scaffoldKey,
       appBar: AppBar(
         centerTitle: true,
         flexibleSpace: Material(
@@ -69,9 +67,6 @@ class _ProfilesState extends State<Profiles> {
           FlatButton(
             child: Text("Save", style: TextStyle(color: Colors.lime, fontSize: 18.0),),
             onPressed: () async {
-              final snackBar = SnackBar(
-                content: Text("Save Success!"),
-              );
 
               await Firestore.instance.collection('users')
                   .document(currentUser.id)
@@ -176,6 +171,15 @@ class _ProfilesState extends State<Profiles> {
                 )
               ],
             ),
+          ),
+          SizedBox(height: 20.0,),
+          MaterialButton(
+            child: Text('Sign Out'),
+            onPressed: () async {
+              await Navigator.pushReplacement(context, MaterialPageRoute(
+                  builder: (_) => Login(logout: true,)
+                ));
+            },
           ),
         ],
       ),

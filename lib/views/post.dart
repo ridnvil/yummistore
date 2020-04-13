@@ -33,12 +33,12 @@ class _PostProductsState extends State<PostProducts> {
   TextEditingController prices = TextEditingController();
   TextEditingController stock = TextEditingController();
   TextEditingController locationController = TextEditingController();
+  TextEditingController descriptionController = TextEditingController();
 
   @override
   void initState() { 
     super.initState();
     currentUser = widget.account;
-    print(currentUser.email);
     getUserLocation();
   }
 
@@ -77,16 +77,14 @@ class _PostProductsState extends State<PostProducts> {
     List<Placemark> placemarks = await Geolocator().placemarkFromCoordinates(position.latitude, position.longitude);
     Placemark placemark = placemarks[0];
     String completeAddress = '${placemark.subThoroughfare}, ${placemark.thoroughfare}, ${placemark.subLocality}, ${placemark.locality}, ${placemark.subAdministrativeArea}, ${placemark.administrativeArea}, ${placemark.postalCode}, ${placemark.country}';
-    String formattedAddress = "${placemark.locality}, ${placemark.country}, ${placemark.postalCode}";
+    // String formattedAddress = "${placemark.locality}, ${placemark.country}, ${placemark.postalCode}";
 
     locationController.text = completeAddress;
-    print(completeAddress);
-    print(formattedAddress);
   }
 
   postProduct() async {
     DateTime timestamp = DateTime.now();
-    // print(imageURL);
+
     await Firestore.instance.collection('products').document(postID)
         .setData({
           'postID': postID,
@@ -94,6 +92,7 @@ class _PostProductsState extends State<PostProducts> {
           'author': currentUser.displayName, 
           'idauthor': currentUser.id, 
           'picture': imageURL,
+          'description': descriptionController.text,
           'location': locationController.text,
           'imagename': imageID,
           'prices': prices.text, 
@@ -107,47 +106,54 @@ class _PostProductsState extends State<PostProducts> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        elevation: 1,
         centerTitle: true,
-        flexibleSpace: Material(
-          child: Padding(
-            padding: const EdgeInsets.only(right: 350.0),
-            child: ClipRRect(
-              borderRadius: BorderRadius.only(topRight: Radius.circular(50.0)),
-              child: Container(
-                color: Colors.lime,
+        flexibleSpace: Stack(
+          alignment: Alignment.bottomCenter,
+          children: <Widget>[
+            Material(
+              child: Padding(
+                padding: const EdgeInsets.only(right: 350.0),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.only(topRight: Radius.circular(50.0)),
+                  child: Container(
+                    color: Colors.lime,
+                  ),
+                ),
               ),
             ),
-          ),
+            loading ? LinearProgressIndicator(): Text(""),
+          ],
         ),
         actions: <Widget>[
           FlatButton(
             child: Text("POST", style: TextStyle(color: Colors.lime),),
             onPressed: () async {
-              if(file == await null || productName.text == "" || prices.text == "" || stock.text == ""){
-                return await showDialog(
-                  context: context,
-                  builder: (context){
-                    return AlertDialog(
-                      title: Text("Field Kosong"),
-                      content: Container(
-                        height: 50.0,
-                        width: 250.0,
-                        child: ListView(
-                          children: <Widget>[
-                            Text("Semua Field harus di isi!!, tidak boleh ada yang kosong...")
-                          ],
-                        ),
-                      ),
-                      actions: <Widget>[
-                        FlatButton(
-                          child: Text("OK"),
-                          onPressed: () => Navigator.pop(context),
-                        )
-                      ],
-                    );
-                  }
-                );
-              }
+              // if(file == await null || productName.text == "" || prices.text == "" || stock.text == ""){
+              //   return await showDialog(
+              //     context: context,
+              //     builder: (context){
+              //       return AlertDialog(
+              //         title: Text("Field Kosong"),
+              //         content: Container(
+              //           height: 50.0,
+              //           width: 250.0,
+              //           child: ListView(
+              //             children: <Widget>[
+              //               Text("Semua Field harus di isi!!, tidak boleh ada yang kosong...")
+              //             ],
+              //           ),
+              //         ),
+              //         actions: <Widget>[
+              //           FlatButton(
+              //             child: Text("OK"),
+              //             onPressed: () => Navigator.pop(context),
+              //           )
+              //         ],
+              //       );
+              //     }
+              //   );
+              // }
 
               await compressImage();
               await uploadPhoto(file);
@@ -164,11 +170,10 @@ class _PostProductsState extends State<PostProducts> {
             },
           )
         ],
-        title: Text("Posting Cake", style: TextStyle(color: Colors.lime),),
+        title: Text("Posting Cake", style: TextStyle(color: Colors.black),),
       ),
       body: widget.userSeller ? ListView(
         children: <Widget>[
-          loading ? LinearProgressIndicator(): Text(""),
           Padding(
             padding: const EdgeInsets.all(10.0),
             child: Material(
@@ -218,34 +223,32 @@ class _PostProductsState extends State<PostProducts> {
               ),
             ),
           ),
-          SizedBox(height: 10.0,),
-          // FlatButton(
-          //   child: Text("Atur Alamat"),
-          //   onPressed: () async {
-          //     await getUserLocation();
-          //   },
-          // ),
-          SizedBox(height: 10.0,),
           Padding(
             padding: const EdgeInsets.all(20.0),
             child: TextField(
               controller: locationController,
+              maxLines: 2,
               decoration: InputDecoration(
                 border: InputBorder.none,
                 labelText: 'Address / Location'
               ),
             ),
           ),
-          // Padding(
-          //   padding: const EdgeInsets.all(20.0),
-          //   child: TextField(
-          //     controller: productName,
-          //     decoration: InputDecoration(
-          //       border: InputBorder.none,
-          //       labelText: 'Description / Deskripsi'
-          //     ),
-          //   ),
-          // ),
+          Padding(
+            padding: const EdgeInsets.only(left: 20.0),
+            child: Text('Description / Deskripsi', style: TextStyle(fontSize: 17.0, color: Colors.black54),),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 20.0, right: 20.0),
+            child: TextField(
+              controller: descriptionController,
+              maxLines: 5,
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                // labelText: 'type'
+              ),
+            ),
+          ),
           Padding(
             padding: const EdgeInsets.all(20.0),
             child: TextField(

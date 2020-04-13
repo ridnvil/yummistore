@@ -10,6 +10,12 @@ class CommentMessage extends StatefulWidget {
 }
 
 class _CommentMessageState extends State<CommentMessage> {
+
+  @override
+  void initState() {
+    super.initState();
+  }
+  
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
@@ -17,9 +23,10 @@ class _CommentMessageState extends State<CommentMessage> {
       builder: (context, AsyncSnapshot<QuerySnapshot> snapshot){
         if(snapshot.hasError)
           return Center(child: Text("${snapshot.error}"),);
-        
+
         switch(snapshot.connectionState){
-          case ConnectionState.waiting: return Center(child: CircularProgressIndicator(),);
+          case ConnectionState.waiting: return Center(child: LinearProgressIndicator(),);
+          case ConnectionState.none: return Center(child: Text('Kosong'),);
           default:
             return Column(
               children: snapshot.data.documents.map((doc){
