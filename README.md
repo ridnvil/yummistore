@@ -1,4 +1,4 @@
-# cakestore
+# yummistore
 
 A new Flutter project.
 
