@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 final money = new NumberFormat("#,##0.00", "en_US");
 
@@ -68,7 +69,7 @@ class _OrderProductState extends State<OrderProduct> {
                     child: Container(
                       height: 300.0,
                       width: MediaQuery.of(context).size.width,
-                      child: Image.network(document['picture'], fit: BoxFit.cover,)
+                      child: CachedNetworkImage(imageUrl: document['picture'], fit: BoxFit.cover,)
                     ),
                   ),
                   isOrderProc ? Center(child: LinearProgressIndicator(),): Text(''),
@@ -142,7 +143,7 @@ class _OrderProductState extends State<OrderProduct> {
                     child: IconButton(
                       icon: Text('+', style: TextStyle(fontSize:30.0),),
                       onPressed: () {
-                        setState(() {
+                        setState(() async {
 
                           if(orderqty >= stock)
                             return showDialog(
@@ -175,7 +176,7 @@ class _OrderProductState extends State<OrderProduct> {
                       textAlign: TextAlign.center,
                       style: TextStyle(fontSize: 40.0),
                       onChanged: (val) {
-                        setState(() {
+                        setState(() async {
                           // orderqty = int.parse(qty.text);
                           if(int.parse(val) > stock)
                             return showDialog(

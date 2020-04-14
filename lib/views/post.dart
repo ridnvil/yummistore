@@ -106,7 +106,7 @@ class _PostProductsState extends State<PostProducts> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        elevation: 1,
+        elevation: 0,
         centerTitle: true,
         flexibleSpace: Stack(
           alignment: Alignment.bottomCenter,
@@ -129,31 +129,31 @@ class _PostProductsState extends State<PostProducts> {
           FlatButton(
             child: Text("POST", style: TextStyle(color: Colors.lime),),
             onPressed: () async {
-              // if(file == await null || productName.text == "" || prices.text == "" || stock.text == ""){
-              //   return await showDialog(
-              //     context: context,
-              //     builder: (context){
-              //       return AlertDialog(
-              //         title: Text("Field Kosong"),
-              //         content: Container(
-              //           height: 50.0,
-              //           width: 250.0,
-              //           child: ListView(
-              //             children: <Widget>[
-              //               Text("Semua Field harus di isi!!, tidak boleh ada yang kosong...")
-              //             ],
-              //           ),
-              //         ),
-              //         actions: <Widget>[
-              //           FlatButton(
-              //             child: Text("OK"),
-              //             onPressed: () => Navigator.pop(context),
-              //           )
-              //         ],
-              //       );
-              //     }
-              //   );
-              // }
+              if(file == await null || productName.text == "" || prices.text == "" || stock.text == ""){
+                return await showDialog(
+                  context: context,
+                  builder: (context){
+                    return AlertDialog(
+                      title: Text("Field Kosong"),
+                      content: Container(
+                        height: 50.0,
+                        width: 250.0,
+                        child: ListView(
+                          children: <Widget>[
+                            Text("Semua Field harus di isi!!, tidak boleh ada yang kosong...")
+                          ],
+                        ),
+                      ),
+                      actions: <Widget>[
+                        FlatButton(
+                          child: Text("OK"),
+                          onPressed: () => Navigator.pop(context),
+                        )
+                      ],
+                    );
+                  }
+                );
+              }
 
               await compressImage();
               await uploadPhoto(file);
@@ -175,9 +175,9 @@ class _PostProductsState extends State<PostProducts> {
       body: widget.userSeller ? ListView(
         children: <Widget>[
           Padding(
-            padding: const EdgeInsets.all(10.0),
+            padding: const EdgeInsets.all(20.0),
             child: Material(
-              elevation: 5,
+              elevation: 15,
               borderRadius: BorderRadius.circular(10.0),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(10.0),

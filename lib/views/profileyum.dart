@@ -3,6 +3,7 @@ import 'package:cakestore/views/profile.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class ProfileUser extends StatefulWidget {
   final String userID;
@@ -74,8 +75,8 @@ class _ProfileUserState extends State<ProfileUser> {
               Padding(
                 padding: const EdgeInsets.all(10.0),
                 child: Row(
-                  // mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
                     CircleAvatar(
                       maxRadius: 50.0,
@@ -95,7 +96,14 @@ class _ProfileUserState extends State<ProfileUser> {
                           Text('Alamat: ${document['alamat']}'),
                         ],
                       ),
-                    )
+                    ),
+                    Expanded(
+                      child: thismineuser ? Text(''):IconButton(
+                        iconSize: 39.0,
+                        icon: Icon(Icons.person_add),
+                        onPressed: () {},
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -186,10 +194,10 @@ class _ProfileUserState extends State<ProfileUser> {
                           children: <Widget>[
                             ExpansionTile(
                               title: Text('${doc['product']}'),
-                              leading: Image.network(doc['picture']),
+                              leading: CachedNetworkImage(imageUrl: doc['picture']),
                               subtitle: Text('Stock ${doc['stock']}'),
                               children: <Widget>[
-                                Image.network(doc['picture'])
+                                CachedNetworkImage(imageUrl: doc['picture'])
                               ],
                             ),
                             ExpansionTile(

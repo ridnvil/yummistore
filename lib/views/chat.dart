@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:uuid/uuid.dart';
+// import 'package:uuid/uuid.dart';
 
 class ChatMessage extends StatefulWidget {
   final String outhorID;
@@ -75,7 +75,7 @@ class _ChatMessageState extends State<ChatMessage> {
                 IconButton(
                   icon: Icon(Icons.send, size: 30.0,),
                   onPressed: () {
-                    String chatID = Uuid().v4();
+                    // String chatID = Uuid().v4();
                   },
                 ),
               ],

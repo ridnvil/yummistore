@@ -65,16 +65,6 @@ class _LoginState extends State<Login> {
     _googleSignIn.signInSilently();
   }
 
-  Future<bool> userCheck(id) async {
-    await Firestore.instance.collection('users').document(id).get().then((DocumentSnapshot user) {
-      if(user.exists){
-        return true;
-      }else{
-        return false;
-      }
-    });
-  }
-
   Future registerUser(id, name, email, photo, phone) async {
     await Firestore.instance.collection('users').document(id)
         .setData({ 
