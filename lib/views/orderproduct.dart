@@ -65,11 +65,15 @@ class _OrderProductState extends State<OrderProduct> {
               Stack(
                 alignment: Alignment.topCenter,
                 children: <Widget>[
-                  Material(
-                    child: Container(
-                      height: 300.0,
-                      width: MediaQuery.of(context).size.width,
-                      child: CachedNetworkImage(imageUrl: document['picture'], fit: BoxFit.cover,)
+                  Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Material(
+                      elevation: 10,
+                      child: Container(
+                        height: 300.0,
+                        width: MediaQuery.of(context).size.width,
+                        child: CachedNetworkImage(imageUrl: document['picture'], fit: BoxFit.cover,)
+                      ),
                     ),
                   ),
                   isOrderProc ? Center(child: LinearProgressIndicator(),): Text(''),

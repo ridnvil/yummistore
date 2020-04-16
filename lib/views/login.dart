@@ -50,7 +50,7 @@ class _LoginState extends State<Login> {
       });
       if(currentUser != null){
         isSignin = true;
-        handleSignIn()
+        handleSignIn(currentUser)
             .then((FirebaseUser user) { 
               print(user.uid);
               Navigator.pushReplacement(context, MaterialPageRoute(
@@ -80,7 +80,13 @@ class _LoginState extends State<Login> {
 
   }
 
-  Future<FirebaseUser> handleSignIn() async {
+  Future<FirebaseUser> handleSignIn(GoogleSignInAccount accountGoogle) async {
+
+    if(accountGoogle != null){
+      print('User active is: $accountGoogle');
+    }else{
+      print('User is Empty');
+    }
 
     final GoogleSignInAccount googleUser = await _googleSignIn.signIn();
     final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
@@ -168,7 +174,7 @@ class _LoginState extends State<Login> {
                           height: 55.0,
                           minWidth: 50.0,
                           onPressed: () async {
-                            await handleSignIn()
+                            await handleSignIn(currentUser)
                                 .then((FirebaseUser user) async {
                                   await registerUser(currentUser2.id, user.displayName, user.email, user.photoUrl, user.phoneNumber);
                                   await Navigator.pushReplacement(context, MaterialPageRoute(
