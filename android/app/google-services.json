@@ -15,6 +15,22 @@
       },
       "oauth_client": [
         {
+          "client_id": "1015190102967-humb8d0p7hsndmgsd96fsi0qbvsmjt5b.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.nvil.cakestore",
+            "certificate_hash": "07aa9eff0d8c52bc7a1d8c7086710cb1c0facb14"
+          }
+        },
+        {
+          "client_id": "1015190102967-e6ju0rtva6q95ebq2f7g3lsc3r4vbsqi.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.nvil.cakestore",
+            "certificate_hash": "d1d102b5ae7730e05205e64dfb525d9c01f030d3"
+          }
+        },
+        {
           "client_id": "1015190102967-ipt2v2hg6uv6bdh44uaf7fekq36dsl3h.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

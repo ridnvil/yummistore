@@ -40,7 +40,7 @@ class _OrderanMasukState extends State<OrderanMasuk> {
         ),
       ),
       body: StreamBuilder(
-        stream: Firestore.instance.collection('orders').where('ownerid', isEqualTo: currentUser.id).snapshots(),
+        stream: FirebaseFirestore.instance.collection('orders').where('ownerid', isEqualTo: currentUser.id).snapshots(),
         builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if(snapshot.hasError)
             return Center(child: Text('${snapshot.error}'),);
@@ -52,15 +52,15 @@ class _OrderanMasukState extends State<OrderanMasuk> {
             case ConnectionState.waiting: return Center(child: CircularProgressIndicator(),);
             default:
               return ListView(
-                children: snapshot.data.documents.map((document){
+                children: snapshot.data.docs.map((document){
                   return Column(
                     children: <Widget>[
                       ExpansionTile(
                         leading: CircleAvatar(
-                          backgroundImage: NetworkImage(document['picture']),
+                          backgroundImage: NetworkImage(document.data()['picture']),
                         ),
-                        title: Text('${document['product']} / ${document['userorder']}'),
-                        subtitle: Text('Jumlah: ${document['qty']} / Total: ${document['totalbayar']}'),
+                        title: Text('${document.data()['product']} / ${document.data()['userorder']}'),
+                        subtitle: Text('Jumlah: ${document.data()['qty']} / Total: ${document.data()['totalbayar']}'),
                         children: <Widget>[
                           Padding(
                             padding: const EdgeInsets.all(10.0),
@@ -72,24 +72,24 @@ class _OrderanMasukState extends State<OrderanMasuk> {
                                     SizedBox(width: 20.0,),
                                     Text('Pemesan: '),
                                     CircleAvatar(
-                                      backgroundImage: NetworkImage(document['useravatar']),
+                                      backgroundImage: NetworkImage(document.data()['useravatar']),
                                       maxRadius: 12.0,
                                     ),
                                     SizedBox(width: 5.0,),
-                                    Text('${document['userorder']}'),
+                                    Text('${document.data()['userorder']}'),
                                   ],
                                 ),
                                 SizedBox(height: 5.0,),
                                 Row(
                                   children: <Widget>[
                                     SizedBox(width: 20.0,),
-                                    Expanded(child: Text('Jumlah Pesanan ${document['qty']} dengan total Pembayaran Rp.${money.format(double.parse(document['totalbayar']))}')),
+                                    Expanded(child: Text('Jumlah Pesanan ${document.data()['qty']} dengan total Pembayaran Rp.${money.format(double.parse(document.data()['totalbayar']))}')),
                                   ],
                                 ),
                                 Row(
                                   children: <Widget>[
                                     SizedBox(width: 20.0,),
-                                    Expanded(child: document['status'] == 1 ? Text('Status: Pesanan Sedang di Proses'): Text('Status: Menunggu di Proses')),
+                                    Expanded(child: document.data()['status'] == 1 ? Text('Status: Pesanan Sedang di Proses'): Text('Status: Menunggu di Proses')),
                                   ],
                                 )
                               ],

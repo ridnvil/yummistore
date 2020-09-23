@@ -11,8 +11,10 @@ class _AboutState extends State<About> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Text("About"),
+      body: SafeArea(
+        child: Center(
+          child: Text("About"),
+        ),
       ),
     );
   }

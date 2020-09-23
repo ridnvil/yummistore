@@ -40,7 +40,7 @@ class _OrderanSayaState extends State<OrderanSaya> {
         ),
       ),
       body: StreamBuilder(
-        stream: Firestore.instance.collection('orders').where('userorderid', isEqualTo: currentUser.id).snapshots(),
+        stream: FirebaseFirestore.instance.collection('orders').where('userorderid', isEqualTo: currentUser.id).snapshots(),
         builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
           if(snapshot.hasError)
             return Center(child: Text('${snapshot.error}'),);
@@ -52,7 +52,8 @@ class _OrderanSayaState extends State<OrderanSaya> {
             case ConnectionState.waiting: return Center(child: CircularProgressIndicator(),);
             default:
               return ListView(
-                children: snapshot.data.documents.map((document){
+                children: snapshot.data.docs.map((documentx){
+                  var document = documentx.data();
                   return Column(
                     children: <Widget>[
                       ExpansionTile(

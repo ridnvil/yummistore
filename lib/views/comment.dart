@@ -1,4 +1,8 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 
 class CommentMessage extends StatefulWidget {
@@ -10,7 +14,6 @@ class CommentMessage extends StatefulWidget {
 }
 
 class _CommentMessageState extends State<CommentMessage> {
-
   @override
   void initState() {
     super.initState();
@@ -19,7 +22,7 @@ class _CommentMessageState extends State<CommentMessage> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-      stream: Firestore.instance.collection('comments').document(widget.postID).collection('comments').orderBy('publish', descending: true).snapshots(),
+      stream: FirebaseFirestore.instance.collection('comments').doc(widget.postID).collection('comments').snapshots(),
       builder: (context, AsyncSnapshot<QuerySnapshot> snapshot){
         if(snapshot.hasError)
           return Center(child: Text("${snapshot.error}"),);
@@ -29,7 +32,7 @@ class _CommentMessageState extends State<CommentMessage> {
           case ConnectionState.none: return Center(child: Text('Kosong'),);
           default:
             return Column(
-              children: snapshot.data.documents.map((doc){
+              children: snapshot.data.docs.map((doc){
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
@@ -38,17 +41,17 @@ class _CommentMessageState extends State<CommentMessage> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: <Widget>[
                         CircleAvatar(
-                          backgroundImage: NetworkImage(doc['avatar']),
+                          backgroundImage: NetworkImage(doc.data()['avatar']),
                           maxRadius: 10,
                         ),
                         Padding(
                           padding: const EdgeInsets.all(2.0),
-                          child: Text('${doc['user']} : ', style: TextStyle(fontWeight: FontWeight.bold),),
+                          child: Text('${doc.data()['user']} : ', style: TextStyle(fontWeight: FontWeight.bold),),
                         ),
                         Expanded(
                           child: Padding(
                             padding: const EdgeInsets.all(2.0),
-                            child: Text(doc['comment']),
+                            child: Text(doc.data()['comment']),
                           ),
                         ),
                       ],
